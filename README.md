@@ -24,6 +24,11 @@ dan **HTTPS**.
 | Menghapus komentar (*soft delete*) | `DELETE /threads/{threadId}/comments/{commentId}` | ✅ |
 | Menambahkan balasan komentar | `POST /threads/{threadId}/comments/{commentId}/replies` | ✅ |
 | Menghapus balasan (*soft delete*) | `DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}` | ✅ |
+| Menyukai / batal menyukai komentar | `PUT /threads/{threadId}/comments/{commentId}/likes` | ✅ |
+
+Menyukai komentar bersifat *toggle*: bila pengguna belum menyukai komentar maka aksinya
+adalah menyukai, dan bila sudah menyukai maka aksinya adalah batal menyukai. Jumlah suka
+ditampilkan sebagai `likeCount` pada setiap item komentar di detail thread.
 
 Komentar dan balasan dihapus secara **soft delete** (kolom `is_delete`). Saat detail thread
 diakses, kontennya ditampilkan sebagai `**komentar telah dihapus**` dan
