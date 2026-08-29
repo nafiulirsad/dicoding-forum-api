@@ -1,0 +1,9 @@
+node_modules
+.idea
+.vscode
+coverage
+.env
+.test.env
+*.log
+.DS_Store
+SUBMISSION_BRIEF.md
