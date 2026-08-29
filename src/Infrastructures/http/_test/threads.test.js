@@ -7,10 +7,12 @@ import AuthenticationsTableTestHelper from '../../../../tests/AuthenticationsTab
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.js';
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.js';
 import RepliesTableTestHelper from '../../../../tests/RepliesTableTestHelper.js';
+import LikesTableTestHelper from '../../../../tests/LikesTableTestHelper.js';
 import ServerTestHelper from '../../../../tests/ServerTestHelper.js';
 
 describe('/threads endpoint', () => {
   afterEach(async () => {
+    await LikesTableTestHelper.cleanTable();
     await RepliesTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
@@ -189,6 +191,11 @@ describe('/threads endpoint', () => {
         content: 'sebuah balasan',
         date: '2021-08-08T08:07:01.522Z',
       });
+      await LikesTableTestHelper.addLike({
+        id: 'like-123',
+        commentId: 'comment-123',
+        owner: userId,
+      });
 
       // Action
       const response = await request(app).get('/threads/thread-123');
@@ -209,9 +216,11 @@ describe('/threads endpoint', () => {
       expect(thread.comments[0].replies).toHaveLength(2);
       expect(thread.comments[0].replies[0].content).toEqual('**balasan telah dihapus**');
       expect(thread.comments[0].replies[1].content).toEqual('sebuah balasan');
+      expect(thread.comments[0].likeCount).toEqual(1);
       expect(thread.comments[1].id).toEqual('comment-456');
       expect(thread.comments[1].content).toEqual('**komentar telah dihapus**');
       expect(thread.comments[1].replies).toHaveLength(0);
+      expect(thread.comments[1].likeCount).toEqual(0);
     });
   });
 });
