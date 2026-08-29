@@ -14,6 +14,7 @@ import AuthenticationRepository from '../Domains/authentications/AuthenticationR
 import ThreadRepository from '../Domains/threads/ThreadRepository.js';
 import CommentRepository from '../Domains/comments/CommentRepository.js';
 import ReplyRepository from '../Domains/replies/ReplyRepository.js';
+import LikeRepository from '../Domains/likes/LikeRepository.js';
 import PasswordHash from '../Applications/security/PasswordHash.js';
 import AuthenticationTokenManager from '../Applications/security/AuthenticationTokenManager.js';
 import UserRepositoryPostgres from './repository/UserRepositoryPostgres.js';
@@ -21,6 +22,7 @@ import AuthenticationRepositoryPostgres from './repository/AuthenticationReposit
 import ThreadRepositoryPostgres from './repository/ThreadRepositoryPostgres.js';
 import CommentRepositoryPostgres from './repository/CommentRepositoryPostgres.js';
 import ReplyRepositoryPostgres from './repository/ReplyRepositoryPostgres.js';
+import LikeRepositoryPostgres from './repository/LikeRepositoryPostgres.js';
 import BcryptPasswordHash from './security/BcryptPasswordHash.js';
 import JwtTokenManager from './security/JwtTokenManager.js';
 
@@ -35,6 +37,7 @@ import AddCommentUseCase from '../Applications/use_case/AddCommentUseCase.js';
 import DeleteCommentUseCase from '../Applications/use_case/DeleteCommentUseCase.js';
 import AddReplyUseCase from '../Applications/use_case/AddReplyUseCase.js';
 import DeleteReplyUseCase from '../Applications/use_case/DeleteReplyUseCase.js';
+import LikeUnlikeCommentUseCase from '../Applications/use_case/LikeUnlikeCommentUseCase.js';
 
 // creating container
 const container = createContainer();
@@ -83,6 +86,16 @@ container.register([
   {
     key: ReplyRepository.name,
     Class: ReplyRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        { concrete: pool },
+        { concrete: nanoid },
+      ],
+    },
+  },
+  {
+    key: LikeRepository.name,
+    Class: LikeRepositoryPostgres,
     parameter: {
       dependencies: [
         { concrete: pool },
@@ -176,6 +189,7 @@ container.register([
         { name: 'threadRepository', internal: ThreadRepository.name },
         { name: 'commentRepository', internal: CommentRepository.name },
         { name: 'replyRepository', internal: ReplyRepository.name },
+        { name: 'likeRepository', internal: LikeRepository.name },
       ],
     },
   },
@@ -220,6 +234,18 @@ container.register([
       injectType: 'destructuring',
       dependencies: [
         { name: 'replyRepository', internal: ReplyRepository.name },
+        { name: 'commentRepository', internal: CommentRepository.name },
+        { name: 'threadRepository', internal: ThreadRepository.name },
+      ],
+    },
+  },
+  {
+    key: LikeUnlikeCommentUseCase.name,
+    Class: LikeUnlikeCommentUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        { name: 'likeRepository', internal: LikeRepository.name },
         { name: 'commentRepository', internal: CommentRepository.name },
         { name: 'threadRepository', internal: ThreadRepository.name },
       ],

@@ -9,6 +9,22 @@ describe('a DetailComment entity', () => {
       date: '2021-08-08T07:22:33.555Z',
       content: 'sebuah comment',
       replies: [],
+      likeCount: 0,
+    };
+
+    // Action & Assert
+    expect(() => new DetailComment(payload)).toThrowError('DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+  });
+
+  it('should throw error when payload did not contain likeCount', () => {
+    // Arrange
+    const payload = {
+      id: 'comment-123',
+      username: 'johndoe',
+      date: '2021-08-08T07:22:33.555Z',
+      content: 'sebuah comment',
+      replies: [],
+      isDelete: false,
     };
 
     // Action & Assert
@@ -23,6 +39,23 @@ describe('a DetailComment entity', () => {
       date: '2021-08-08T07:22:33.555Z',
       content: 'sebuah comment',
       replies: {},
+      likeCount: 0,
+      isDelete: false,
+    };
+
+    // Action & Assert
+    expect(() => new DetailComment(payload)).toThrowError('DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+  });
+
+  it('should throw error when likeCount is not a number', () => {
+    // Arrange
+    const payload = {
+      id: 'comment-123',
+      username: 'johndoe',
+      date: '2021-08-08T07:22:33.555Z',
+      content: 'sebuah comment',
+      replies: [],
+      likeCount: '2',
       isDelete: false,
     };
 
@@ -38,6 +71,7 @@ describe('a DetailComment entity', () => {
       date: '2021-08-08T07:22:33.555Z',
       content: 'sebuah comment',
       replies: [],
+      likeCount: 0,
       isDelete: 'false',
     };
 
@@ -53,6 +87,7 @@ describe('a DetailComment entity', () => {
       date: '2021-08-08T07:22:33.555Z',
       content: 'sebuah comment',
       replies: [],
+      likeCount: 2,
       isDelete: false,
     };
 
@@ -65,7 +100,27 @@ describe('a DetailComment entity', () => {
     expect(detailComment.date).toEqual(payload.date);
     expect(detailComment.replies).toEqual(payload.replies);
     expect(detailComment.content).toEqual('sebuah comment');
+    expect(detailComment.likeCount).toEqual(2);
     expect(detailComment.isDelete).toBeUndefined();
+  });
+
+  it('should create DetailComment object correctly when likeCount is zero', () => {
+    // Arrange
+    const payload = {
+      id: 'comment-123',
+      username: 'johndoe',
+      date: '2021-08-08T07:22:33.555Z',
+      content: 'sebuah comment',
+      replies: [],
+      likeCount: 0,
+      isDelete: false,
+    };
+
+    // Action
+    const detailComment = new DetailComment(payload);
+
+    // Assert
+    expect(detailComment.likeCount).toEqual(0);
   });
 
   it('should mask the content when comment is deleted', () => {
@@ -76,6 +131,7 @@ describe('a DetailComment entity', () => {
       date: '2021-08-08T07:22:33.555Z',
       content: 'sebuah comment',
       replies: [],
+      likeCount: 1,
       isDelete: true,
     };
 
@@ -84,5 +140,6 @@ describe('a DetailComment entity', () => {
 
     // Assert
     expect(detailComment.content).toEqual('**komentar telah dihapus**');
+    expect(detailComment.likeCount).toEqual(1);
   });
 });
